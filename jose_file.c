@@ -48,7 +48,33 @@ typedef struct
 
 
 int main(){
+    int resposta;
+    do{
+        printf("OPCAO 1\n");
+        printf("OPCAO 2\n");
+        printf("OPCAO 3\n");
+        printf("OPCAO 4\n");
+        scanf("%d", &resposta);
 
-    
+        switch (resposta)
+        {
+        case 1:
+            printf("Função 1\n");
+            break;
+        case 2:
+            printf("Opção 2\n");
+            break;
+        case 3:
+            printf("Opção 3\n");
+            break;
+        case 4:
+            printf("Opção 4\n");
+            break;
+        }
+    } while(resposta != 4);
+
+
+
+
     return 0;
 }
