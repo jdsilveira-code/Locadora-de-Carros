@@ -15,7 +15,7 @@ typedef struct {
     char Código[9];
     char *Marca[100];
     char *Modelo[100];
-    struct Categoria categoria;
+    Categoria categoria;
     int Ano[4];
     float Diaria[10];
     int qtdUnidades[101];
