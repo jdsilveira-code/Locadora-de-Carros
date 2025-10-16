@@ -7,8 +7,8 @@
 typedef struct 
 {
     int dia;
-    int ano;
     int mes;
+    int ano;
 
 }Data;
 
@@ -45,10 +45,10 @@ typedef struct
     float valor_previsto;
     float valor_pago;
 
-}locacao;
+}Locacao;
 
-// Função para pausar a execução por um tempo em milissegundos.
-// Exemplo de uso: delay(1000);
+/*Função para pausar a execução por um tempo em milissegundos.
+  Exemplo de uso: delay(1000);*/
 void delay(int tempo){
     fflush(stdout);
     Sleep(tempo);
@@ -56,7 +56,7 @@ void delay(int tempo){
 
 /* Função para cadastrar uma categoria de veículo.
    Recebe um ponteiro para Categoria e solicita os dados ao usuário.*/
-void categoria(Categoria *v){
+void categoria(Categoria *v, int *qtd){
     int resposta;
     do{
         printf("\nDigite o codigo da categoria: ");
@@ -64,7 +64,7 @@ void categoria(Categoria *v){
 
         printf("Digite o tipo da categoria (ex: SUV, Economico): ");
         scanf("%s", v->tipo); // DICA: Para ler nomes com espaço, ex: "Carro de Luxo", use a função fgets.
-
+        *qtd += 1;
         // Adicionado \n para separar o formulário do menu de opções
         printf("\n1 - Cadastrar nova categoria");
         printf("\n2 - Voltar para a pagina inicial\n");
@@ -84,12 +84,20 @@ void categoria(Categoria *v){
     delay(300);
 }
 
+void exibir_categoria(Categoria *vet, int *tamanho){
+    for(int i = 0; i < *tamanho; i++){
+        printf("Codigo: %d\n", (vet + i)->codigo);
+        printf("Tipo: %s", (vet + i)->tipo);
+        printf("\n");
+    }
+    delay(300);
+}
+
 int main(){
-    int resposta;
+    int resposta, qtd_cadastrados;
     Categoria vetor_categoria[10];
 
     do{
-        // Adicionado \n no início para separar do conteúdo anterior
         printf("\n--- Sistema de Locacao de Veiculos ---\n");
         printf("Escolha uma das opcoes abaixo:\n");
         printf("1 - Cadastrar categoria\n");
@@ -102,27 +110,32 @@ int main(){
         printf("8 - Veiculos alugados (geral)\n");
         printf("9 - Locacoes em aberto\n");
         printf("0 - Sair do sistema\n");
-        printf("Sua opcao: "); // Mensagem mais clara para o usuário
+        printf("Sua opcao: "); 
         scanf("%d", &resposta);
 
         switch (resposta)
         {
         case 1:
-            // Adicionado um título mais claro
             printf("\n--- Cadastro de Categoria ---\n");
-            categoria(vetor_categoria);
+            categoria(vetor_categoria, &qtd_cadastrados);
             break;
         case 2:
-            printf("\nOpcao 2 selecionada.\n");
-            break;
+            if(qtd_cadastrados == 0){
+                printf("Nenhuma categoria cadastrada, tecle 1 para cadastrar.\n");
+                break;
+            }
+            else{
+                printf("\nCategorias cadastradas: \n");
+                exibir_categoria(vetor_categoria, &qtd_cadastrados);
+                break;
+            }
         case 3:
             printf("\nOpcao 3 selecionada.\n");
             break;
         case 0:
-            // Adicionado \n para separar a mensagem de fim do prompt do terminal
             printf("\nFim do programa.\n");
             break;
-        default: // É uma boa prática ter um caso 'default'
+        default: 
             printf("\nOpcao invalida! Tente novamente.\n");
             break;
         }
