@@ -47,6 +47,15 @@ typedef struct
 
 }locacao;
 
+// Função para pausar a execução por um tempo em milissegundos.
+// Exemplo de uso: delay(1000);
+void delay(int tempo){
+    fflush(stdout);
+    Sleep(tempo);
+}
+
+/* Função para cadastrar uma categoria de veículo.
+   Recebe um ponteiro para Categoria e solicita os dados ao usuário.*/
 void categoria(Categoria *v){
     int resposta;
     do{
@@ -72,7 +81,7 @@ void categoria(Categoria *v){
             }while(resposta != 1 && resposta != 2);
         }
     }while(resposta != 2);
-    Sleep(300);
+    delay(300);
 }
 
 int main(){
