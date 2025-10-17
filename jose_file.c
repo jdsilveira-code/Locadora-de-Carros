@@ -70,21 +70,22 @@ void ler_str(char *string, int tamanho){
 
 /* Função para cadastrar uma categoria de veículo.
    Recebe um ponteiro para Categoria e solicita os dados ao usuário.*/
-void categoria(Categoria *v, int *qtd){
+
+void categoria(Categoria *vet, int *qtd){
     int resposta;
     int iterador = 0;
 
     do{
         printf("\nCadastro da categoria %d\n", *qtd +1);
         printf("\nDigite o codigo da categoria: ");
-        scanf("%d", &v->codigo);
+        scanf("%d", &vet->codigo);
         limpar_buffer();
 
         printf("Digite o tipo da categoria (ex: SUV, Economico): ");
-        ler_str(v->tipo, sizeof(v->tipo));
+        ler_str(vet->tipo, sizeof(vet->tipo));
 
         (*qtd)++;
-        v++;
+        vet++;
         iterador++;
 
         printf("\n1 - Cadastrar nova categoria");
@@ -116,9 +117,18 @@ void exibir_categoria(Categoria *vet, int tamanho){
     delay(300);
 }
 
+
+void inserir_veiculo(Veiculo *vet, int *qtd){
+    printf("Cadastrando veículo %d", *qtd + 1);
+    (*qtd)++;
+    vet++;
+
+}
+
 int main(){
-    int resposta, qtd_cadastrados;
+    int resposta, qtd_cadastrados, qtd_veiculos;
     Categoria vetor_categoria[10];
+    Veiculo vetor_veiculo[100];
 
     do{
         printf("\n--- Sistema de Locacao de Veiculos ---\n");
@@ -154,16 +164,23 @@ int main(){
                 exibir_categoria(vetor_categoria, qtd_cadastrados);
                 break;
             }
+            delay(300);
 
         case 3:
+            if(qtd_veiculos < 100){
+                printf("Cadastrando veículo:\n");
+                inserir_veiculo(&vetor_veiculo[qtd_veiculos], &qtd_veiculos);
+            }
             printf("\nOpcao 3 selecionada.\n");
             break;
+            delay(300);
         case 0:
             printf("\nFim do programa.\n");
             break;
         default: 
             printf("\nOpcao invalida! Tente novamente.\n");
             break;
+            delay(300);
         }
 
     } while(resposta != 0);
