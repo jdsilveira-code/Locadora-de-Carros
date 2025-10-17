@@ -55,11 +55,12 @@ void delay(int tempo){
 }
 
 /*Função que limpa o buffer
-  Deve ser utilizada após um scanf*/
+  Deve ser utilizada antes de fgets, getline, getchar e após scanfs*/
 void limpar_buffer(){
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
+
 /*Função que substitui o scanf para strings
   Exemplo de uso: ler_str(variavel)*/
 void ler_str(char *string, int tamanho){
@@ -67,10 +68,8 @@ void ler_str(char *string, int tamanho){
     string[strcspn(string, "\n")] = '\0';
 
 }
-
 /* Função para cadastrar uma categoria de veículo.
    Recebe um ponteiro para Categoria e solicita os dados ao usuário.*/
-
 void categoria(Categoria *vet, int *qtd){
     int resposta;
     int iterador = 0;
@@ -103,13 +102,14 @@ void categoria(Categoria *vet, int *qtd){
             limpar_buffer();
         }
     }while(resposta != 2);
+
     if (iterador > 0){
         printf("\n%d categoria(s) cadastrada(s) com sucesso!\n", iterador);
     }
-    delay(300);
 }
-
+/* Função que exibe as categorias cadastradas.*/
 void exibir_categoria(Categoria *vet, int tamanho){
+
     for(int i = 0; i < tamanho; i++){
         printf("\nCodigo: %d\n", vet[i].codigo);
         printf("Tipo: %s\n\n", vet[i].tipo);
@@ -118,15 +118,65 @@ void exibir_categoria(Categoria *vet, int tamanho){
 }
 
 
-void inserir_veiculo(Veiculo *vet, int *qtd){
-    printf("Cadastrando veículo %d", *qtd + 1);
-    (*qtd)++;
-    vet++;
+void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int tamanho){
+    int categoria_valida = 0, resposta;
+    printf("\nCadastrando veiculo %d\n", *qtd + 1);
+    printf("Digite o codigo do veiculo: ");
+    scanf("%d", &vet->codigo);
+    limpar_buffer();
+    // Cadastro do codigo categoria
+    do {
+        printf("\nCategorias disponiveis: \n");
+        for (int i = 0; i < tamanho; i++) {
+            printf(" -> Codigo: %d | Tipo: %s\n", vet_categoria[i].codigo, vet_categoria[i].tipo);
+        }
 
+        printf("\nDigite o codigo da categoria desejada: ");
+        scanf("%d", &vet->codigo_categoria);
+        limpar_buffer();
+
+        // Verifica se o código escolhido existe no vetor de categorias
+        for (int i = 0; i < tamanho; i++) {
+            if (vet_categoria[i].codigo == vet->codigo_categoria) {
+                categoria_valida = 1;
+                break; 
+            }
+        }
+
+        if (categoria_valida == 0) {
+            printf("\n--- ERRO: Codigo de categoria invalido! Tente novamente. ---\n");
+        }
+
+    } while (categoria_valida == 0);
+
+    printf("\nDigite a marca do veiculo: ");
+    ler_str(vet->marca, sizeof(vet->marca));
+    limpar_buffer();
+
+    printf("Digite o modelo do veiculo: ");
+    ler_str(vet->modelo, sizeof(vet->modelo));
+    
+    printf("\nDigite o ano de fabricacao do veiculo: ");
+    scanf("%d", &vet->ano);
+    limpar_buffer();
+
+    printf("\nDigite o valor da diaria do veiculo: ");
+    scanf("%f", &vet->diaria);
+    limpar_buffer();
+
+    printf("\nDigite o numero de unidades disponiveis do veiculo: ");
+    scanf("%d", &vet->unidades_disponiveis);
+    limpar_buffer();
+    
+    printf("\nDigite o numero de unidades alugadas do veiculo: ");
+    scanf("%d", &vet->unidades_alugadas);
+
+    (*qtd)++;
+    delay(300);
 }
 
 int main(){
-    int resposta, qtd_cadastrados, qtd_veiculos;
+    int resposta, qtd_cadastrados = 0, qtd_veiculos = 0;
     Categoria vetor_categoria[10];
     Veiculo vetor_veiculo[100];
 
@@ -151,6 +201,7 @@ int main(){
                 printf("\nLimite de categorias cadastradas atingido. Não é possível cadastrar mais categorias.\n");
                 delay(300);
             }
+            delay(300);
             break;
 
         case 2:
@@ -167,13 +218,24 @@ int main(){
             delay(300);
 
         case 3:
-            if(qtd_veiculos < 100){
-                printf("Cadastrando veículo:\n");
-                inserir_veiculo(&vetor_veiculo[qtd_veiculos], &qtd_veiculos);
+            if(qtd_cadastrados == 0 ){
+                printf("\nPara adicionar um veiculo a frota, e necessario cadastrar uma categoria primeiro. \nTecle 1 para cadastrar a primeira categoria\n");
             }
-            printf("\nOpcao 3 selecionada.\n");
-            break;
+            else{
+                if(qtd_veiculos < 100){
+                    printf("\n---Cadastrando veiculo---\n");
+                    inserir_veiculo(&vetor_veiculo[qtd_veiculos], &qtd_veiculos, vetor_categoria, qtd_cadastrados);
+                }
+                else{
+                    printf("\nLimite de carros atingido. Nao e possivel adicionar mais carros a frota.\n");
+                }
+            }
+
             delay(300);
+            break;
+            
+        case 4:
+            printf("Caso 4");
         case 0:
             printf("\nFim do programa.\n");
             break;
