@@ -54,41 +54,64 @@ void delay(int tempo){
     Sleep(tempo);
 }
 
+/*Função que limpa o buffer
+  Deve ser utilizada após um scanf*/
+void limpar_buffer(){
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+/*Função que substitui o scanf para strings
+  Exemplo de uso: ler_str(variavel)*/
+void ler_str(char *string, int tamanho){
+    fgets(string, tamanho, stdin);
+    string[strcspn(string, "\n")] = '\0';
+
+}
+
 /* Função para cadastrar uma categoria de veículo.
    Recebe um ponteiro para Categoria e solicita os dados ao usuário.*/
 void categoria(Categoria *v, int *qtd){
     int resposta;
+    int iterador = 0;
+
     do{
+        printf("\nCadastro da categoria %d\n", *qtd +1);
         printf("\nDigite o codigo da categoria: ");
         scanf("%d", &v->codigo);
+        limpar_buffer();
 
         printf("Digite o tipo da categoria (ex: SUV, Economico): ");
-        scanf("%s", v->tipo); // DICA: Para ler nomes com espaço, ex: "Carro de Luxo", use a função fgets.
-        *qtd += 1;
-        // Adicionado \n para separar o formulário do menu de opções
+        ler_str(v->tipo, sizeof(v->tipo));
+
+        (*qtd)++;
+        v++;
+        iterador++;
+
         printf("\n1 - Cadastrar nova categoria");
         printf("\n2 - Voltar para a pagina inicial\n");
         printf("Sua opcao: ");
         scanf("%d", &resposta);
+        limpar_buffer();
 
-        if(resposta != 1 && resposta != 2){
-            do{
-                printf("\n--- Resposta incorreta! ---"); 
-                printf("\n1 - Cadastrar nova categoria");
-                printf("\n2 - Voltar para a página inicial\n");
-                printf("Sua opcao: ");
-                scanf("%d", &resposta);
-            }while(resposta != 1 && resposta != 2);
+        while (resposta != 1 && resposta != 2) {
+            printf("\n--- Resposta incorreta! ---\n");
+            printf("1 - Cadastrar outra categoria\n");
+            printf("2 - Voltar para o menu principal\n");
+            printf("Sua opcao: ");
+            scanf("%d", &resposta);
+            limpar_buffer();
         }
     }while(resposta != 2);
+    if (iterador > 0){
+        printf("\n%d categoria(s) cadastrada(s) com sucesso!\n", iterador);
+    }
     delay(300);
 }
 
-void exibir_categoria(Categoria *vet, int *tamanho){
-    for(int i = 0; i < *tamanho; i++){
-        printf("Codigo: %d\n", (vet + i)->codigo);
-        printf("Tipo: %s", (vet + i)->tipo);
-        printf("\n");
+void exibir_categoria(Categoria *vet, int tamanho){
+    for(int i = 0; i < tamanho; i++){
+        printf("\nCodigo: %d\n", vet[i].codigo);
+        printf("Tipo: %s\n\n", vet[i].tipo);
     }
     delay(300);
 }
@@ -103,32 +126,35 @@ int main(){
         printf("1 - Cadastrar categoria\n");
         printf("2 - Exibir categorias\n");
         printf("3 - Inserir veiculo na frota\n");
-        printf("4 - Exibir frota\n");
-        printf("5 - Realizar aluguel\n");
-        printf("6 - Realizar devolucao\n");
-        printf("7 - Veiculos alugados por categoria\n");
-        printf("8 - Veiculos alugados (geral)\n");
-        printf("9 - Locacoes em aberto\n");
         printf("0 - Sair do sistema\n");
         printf("Sua opcao: "); 
         scanf("%d", &resposta);
 
-        switch (resposta)
-        {
+        switch (resposta){
+
         case 1:
-            printf("\n--- Cadastro de Categoria ---\n");
-            categoria(vetor_categoria, &qtd_cadastrados);
-            break;
-        case 2:
-            if(qtd_cadastrados == 0){
-                printf("Nenhuma categoria cadastrada, tecle 1 para cadastrar.\n");
-                break;
+            if(qtd_cadastrados < 10){
+                    printf("\n--- Cadastro de Categoria ---\n");
+                    categoria(&vetor_categoria[qtd_cadastrados], &qtd_cadastrados);
             }
             else{
-                printf("\nCategorias cadastradas: \n");
-                exibir_categoria(vetor_categoria, &qtd_cadastrados);
+                printf("\nLimite de categorias cadastradas atingido. Não é possível cadastrar mais categorias.\n");
+                delay(300);
+            }
+            break;
+
+        case 2:
+            if(qtd_cadastrados == 0){
+                printf("\nNenhuma categoria cadastrada, tecle 1 para cadastrar.\n");
                 break;
             }
+
+            else{
+                printf("\nCategorias cadastradas: \n");
+                exibir_categoria(vetor_categoria, qtd_cadastrados);
+                break;
+            }
+
         case 3:
             printf("\nOpcao 3 selecionada.\n");
             break;
