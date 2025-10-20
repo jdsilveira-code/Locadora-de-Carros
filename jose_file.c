@@ -114,10 +114,8 @@ void categoria(Categoria *vet, int *qtd){
 }
 /* Função que exibe as categorias cadastradas.*/
 void exibir_categoria(Categoria *vet, int tamanho){
-
-    for(int i = 0; i < tamanho; i++){
-        printf("\nCodigo: %d\n", vet[i].codigo);
-        printf("Tipo: %s\n\n", vet[i].tipo);
+    for (int i = 0; i < tamanho; i++) {
+        printf("\nCodigo: %d | Tipo: %s\n", vet[i].codigo, vet[i].tipo);
     }
     delay(300);
 }
@@ -127,13 +125,16 @@ void excluir_categoria(Categoria *vet, int *tamanho){
 
     printf("\n--- Excluir Categoria ---\n");
     printf("Qual categoria voce deseja excluir?\n");
+    // Imprime as categorias existentes
     for (int i = 0; i < *tamanho; i++) {
         printf("\nCodigo: %d | Tipo: %s", vet[i].codigo, vet[i].tipo);
     }
+
     printf("\n\nSua opcao (digite o codigo): ");
     scanf("%d", &resposta);
     limpar_buffer();
 
+    // Varre o vetor até encontrar o codigo e salva o indice da posição
     for (int i = 0; i < *tamanho; i++) {
         if (resposta == vet[i].codigo) {
             indice_excluir = i;
@@ -159,60 +160,79 @@ void excluir_categoria(Categoria *vet, int *tamanho){
 }
 
 void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int tamanho){
-    int categoria_valida = 0;
+    int categoria_valida = 0, resposta = 0, iterador = 0;
     printf("\nCadastrando veiculo %d\n", *qtd + 1);
     printf("Digite o codigo do veiculo: ");
     scanf("%d", &vet->codigo);
     limpar_buffer();
 
     // Cadastro do codigo categoria
-    do {
-        printf("\nCategorias disponiveis: \n");
-        for (int i = 0; i < tamanho; i++) {
-            printf(" -> Codigo: %d | Tipo: %s\n", vet_categoria[i].codigo, vet_categoria[i].tipo);
-        }
+    do{
+        do {
+            printf("\nCategorias disponiveis: \n");
+            for (int i = 0; i < tamanho; i++) {
+                printf(" -> Codigo: %d | Tipo: %s\n", vet_categoria[i].codigo, vet_categoria[i].tipo);
+            }
 
-        printf("\nDigite o codigo da categoria desejada: ");
-        scanf("%d", &vet->codigo_categoria);
+            printf("\nDigite o codigo da categoria desejada: ");
+            scanf("%d", &vet->codigo_categoria);
+            limpar_buffer();
+
+            // Verifica se o código escolhido existe no vetor de categorias
+            for(int i = 0; i < tamanho; i++){
+                if (vet_categoria[i].codigo == vet->codigo_categoria) {
+                    categoria_valida = 1;
+                    break; 
+                }
+            }
+
+            if (categoria_valida == 0) {
+                printf("\n--- ERRO: Codigo de categoria invalido! Tente novamente. ---\n");
+            }
+
+        } while (categoria_valida == 0);
+
+        printf("\nDigite a marca do veiculo: ");
+        ler_str(vet->marca, sizeof(vet->marca));
         limpar_buffer();
 
-        // Verifica se o código escolhido existe no vetor de categorias
-        for(int i = 0; i < tamanho; i++){
-            if (vet_categoria[i].codigo == vet->codigo_categoria) {
-                categoria_valida = 1;
-                break; 
-            }
+        printf("Digite o modelo do veiculo: ");
+        ler_str(vet->modelo, sizeof(vet->modelo));
+        
+        printf("\nDigite o ano de fabricacao do veiculo: ");
+        scanf("%d", &vet->ano);
+        limpar_buffer();
+
+        printf("\nDigite o valor da diaria do veiculo: ");
+        scanf("%f", &vet->diaria);
+        limpar_buffer();
+
+        printf("\nDigite o numero de unidades disponiveis do veiculo: ");
+        scanf("%d", &vet->unidades_disponiveis);
+        limpar_buffer();
+        
+        printf("\nDigite o numero de unidades alugadas do veiculo: ");
+        scanf("%d", &vet->unidades_alugadas);
+
+        (*qtd)++;
+        vet++;
+        iterador++;
+
+        printf("\nVeiculo cadastrado!\n");
+        printf("1 - Cadastrar outro carro \n2 - Voltar ao menu principal\n");
+        printf("Sua opcao: ");
+        scanf("%d", &resposta);
+
+        while(resposta != 1 && resposta != 2){
+            printf("\n--- Resposta incorreta! ---\n");
+            printf("1 - Cadastrar outro veiculo\n");
+            printf("2 - Voltar para o menu principal\n");
+            printf("Sua opcao:\n");
+            scanf("%d", &resposta);
+            limpar_buffer();
         }
-
-        if (categoria_valida == 0) {
-            printf("\n--- ERRO: Codigo de categoria invalido! Tente novamente. ---\n");
-        }
-
-    } while (categoria_valida == 0);
-
-    printf("\nDigite a marca do veiculo: ");
-    ler_str(vet->marca, sizeof(vet->marca));
-    limpar_buffer();
-
-    printf("Digite o modelo do veiculo: ");
-    ler_str(vet->modelo, sizeof(vet->modelo));
+    } while(resposta != 2);
     
-    printf("\nDigite o ano de fabricacao do veiculo: ");
-    scanf("%d", &vet->ano);
-    limpar_buffer();
-
-    printf("\nDigite o valor da diaria do veiculo: ");
-    scanf("%f", &vet->diaria);
-    limpar_buffer();
-
-    printf("\nDigite o numero de unidades disponiveis do veiculo: ");
-    scanf("%d", &vet->unidades_disponiveis);
-    limpar_buffer();
-    
-    printf("\nDigite o numero de unidades alugadas do veiculo: ");
-    scanf("%d", &vet->unidades_alugadas);
-
-    (*qtd)++;
     delay(300);
 }
 
