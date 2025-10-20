@@ -19,7 +19,6 @@ typedef struct
     char tipo[50];
 }Categoria;
 
-
 typedef struct 
 {
     int codigo; 
@@ -53,14 +52,12 @@ void delay(int tempo){
     fflush(stdout);
     Sleep(tempo);
 }
-
 /*Função que limpa o buffer
   Deve ser utilizada antes de fgets, getline, getchar e após scanfs*/
 void limpar_buffer(){
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
-
 /*Função que substitui o scanf para strings
   Exemplo de uso: ler_str(variavel)*/
 void ler_str(char *string, int tamanho){
@@ -160,7 +157,7 @@ void excluir_categoria(Categoria *vet, int *tamanho){
 }
 
 void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int tamanho){
-    int categoria_valida = 0, resposta = 0, iterador = 0;
+    int categoria_valida, resposta = 0, iterador = 0;
     printf("\nCadastrando veiculo %d\n", *qtd + 1);
     printf("Digite o codigo do veiculo: ");
     scanf("%d", &vet->codigo);
@@ -168,6 +165,7 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
 
     // Cadastro do codigo categoria
     do{
+        categoria_valida = 0;
         do {
             printf("\nCategorias disponiveis: \n");
             for (int i = 0; i < tamanho; i++) {
@@ -198,6 +196,7 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
 
         printf("Digite o modelo do veiculo: ");
         ler_str(vet->modelo, sizeof(vet->modelo));
+        limpar_buffer();
         
         printf("\nDigite o ano de fabricacao do veiculo: ");
         scanf("%d", &vet->ano);
@@ -210,9 +209,6 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
         printf("\nDigite o numero de unidades disponiveis do veiculo: ");
         scanf("%d", &vet->unidades_disponiveis);
         limpar_buffer();
-        
-        printf("\nDigite o numero de unidades alugadas do veiculo: ");
-        scanf("%d", &vet->unidades_alugadas);
 
         (*qtd)++;
         vet++;
@@ -236,6 +232,20 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
     delay(300);
 }
 
+void exibir_veiculo(Veiculo *vet, int tamanho){
+    printf("Imprimindo veiculos: ");
+    for(int i = 0; i < tamanho; i++){
+        printf("\n--- Detalhes do Veiculo ---\n");
+        printf("Codigo.............: %d\n", vet->codigo);
+        printf("Codigo Categoria...: %d\n", vet->codigo_categoria);
+        printf("Marca..............: %s\n", vet->marca);
+        printf("Modelo.............: %s\n", vet->modelo);
+        printf("Ano................: %d\n", vet->ano);
+        printf("Valor da Diaria....: R$ %.2f\n", vet->diaria); // Formata para 2 casas decimais
+        printf("Unidades Disponiveis: %d\n", vet->unidades_disponiveis);
+        printf("Unidades Alugadas..: %d\n", vet->unidades_alugadas);
+    }
+}
 int main(){
     int resposta, qtd_cadastrados = 0, qtd_veiculos = 0;
     Categoria vetor_categoria[10];
@@ -248,6 +258,7 @@ int main(){
         printf("2 - Exibir categorias\n");
         printf("3 - Excluir categoria\n");
         printf("4 - Inserir veiculo na frota\n");
+        printf("5 - Exibir veiculos\n");
         printf("0 - Sair do sistema\n");
         printf("Sua opcao: "); 
         scanf("%d", &resposta);
@@ -306,6 +317,10 @@ int main(){
             break;
 
         case 5:
+            if(qtd_veiculos <= 0){
+                printf("Nenhum veiculo cadastrado, primeiro cadastre um veiculo. \nPor favor, retorne ao menu e selecione a opcao 'Inserir veiculo na frota'.\n");
+            }
+            exibir_veiculo(vetor_veiculo, qtd_veiculos);
             delay(300);
             break;
 
