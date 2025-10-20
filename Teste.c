@@ -127,7 +127,7 @@ void inserir_veiculo(Veiculo *vet, int *qtd){
 }
 
 int main(){
-    int resposta, qtd_cadastrados, qtd_veiculos;
+    int resposta, qtd_cadastrados = 0, qtd_veiculos = 0;
     Categoria vetor_categoria[10];
     Veiculo vetor_veiculo[100];
 
