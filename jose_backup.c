@@ -102,6 +102,7 @@ void categoria(Categoria *v, int *qtd){
             limpar_buffer();
         }
     }while(resposta != 2);
+    
     if (iterador > 0){
         printf("\n%d categoria(s) cadastrada(s) com sucesso!\n", iterador);
     }
