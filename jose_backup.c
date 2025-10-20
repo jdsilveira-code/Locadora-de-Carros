@@ -47,7 +47,7 @@ typedef struct
 
 }Locacao;
 
-/*Função para pausar a execução por um tempo em milissegundos.
+/*Função para pausar a execução por um tempo em milisegundos.
   Exemplo de uso: delay(1000);*/
 void delay(int tempo){
     fflush(stdout);
@@ -55,11 +55,12 @@ void delay(int tempo){
 }
 
 /*Função que limpa o buffer
-  Deve ser utilizada após um scanf*/
+  Deve ser utilizada antes de fgets, getline, getchar e após scanfs*/
 void limpar_buffer(){
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
+
 /*Função que substitui o scanf para strings
   Exemplo de uso: ler_str(variavel)*/
 void ler_str(char *string, int tamanho){
@@ -67,24 +68,27 @@ void ler_str(char *string, int tamanho){
     string[strcspn(string, "\n")] = '\0';
 
 }
-
 /* Função para cadastrar uma categoria de veículo.
    Recebe um ponteiro para Categoria e solicita os dados ao usuário.*/
-void categoria(Categoria *v, int *qtd){
+void categoria(Categoria *vet, int *qtd){
     int resposta;
     int iterador = 0;
-
     do{
+        if(*qtd >= 10){
+        printf("\nLimite de categorias cadastradas atingido. Nao e possivel cadastrar mais categorias.\n");
+        break;
+        }
+
         printf("\nCadastro da categoria %d\n", *qtd +1);
         printf("\nDigite o codigo da categoria: ");
-        scanf("%d", &v->codigo);
+        scanf("%d", &vet->codigo);
         limpar_buffer();
 
         printf("Digite o tipo da categoria (ex: SUV, Economico): ");
-        ler_str(v->tipo, sizeof(v->tipo));
+        ler_str(vet->tipo, sizeof(vet->tipo));
 
         (*qtd)++;
-        v++;
+        vet++;
         iterador++;
 
         printf("\n1 - Cadastrar nova categoria");
@@ -97,19 +101,20 @@ void categoria(Categoria *v, int *qtd){
             printf("\n--- Resposta incorreta! ---\n");
             printf("1 - Cadastrar outra categoria\n");
             printf("2 - Voltar para o menu principal\n");
+            printf("3 - Excluir categoria\n");
             printf("Sua opcao: ");
             scanf("%d", &resposta);
             limpar_buffer();
         }
     }while(resposta != 2);
-    
+
     if (iterador > 0){
         printf("\n%d categoria(s) cadastrada(s) com sucesso!\n", iterador);
     }
-    delay(300);
 }
-
+/* Função que exibe as categorias cadastradas.*/
 void exibir_categoria(Categoria *vet, int tamanho){
+
     for(int i = 0; i < tamanho; i++){
         printf("\nCodigo: %d\n", vet[i].codigo);
         printf("Tipo: %s\n\n", vet[i].tipo);
@@ -117,16 +122,112 @@ void exibir_categoria(Categoria *vet, int tamanho){
     delay(300);
 }
 
+void excluir_categoria(Categoria *vet, int *tamanho){
+    int resposta, indice_excluir = -1;
+
+    printf("\n--- Excluir Categoria ---\n");
+    printf("Qual categoria voce deseja excluir?\n");
+    for (int i = 0; i < *tamanho; i++) {
+        printf("\nCodigo: %d | Tipo: %s", vet[i].codigo, vet[i].tipo);
+    }
+    printf("\n\nSua opcao (digite o codigo): ");
+    scanf("%d", &resposta);
+    limpar_buffer();
+
+    for (int i = 0; i < *tamanho; i++) {
+        if (resposta == vet[i].codigo) {
+            indice_excluir = i;
+            break;
+        }
+    }
+
+    if (indice_excluir == -1) {
+        printf("\nCodigo nao encontrado!\n");
+        // MELHORIA 2: Adiciona delay no caso de erro.
+        delay(300);
+    } else {
+        // O deslocamento está perfeito.
+        for (int i = indice_excluir; i < *tamanho - 1; i++) {
+            vet[i] = vet[i + 1];
+        }
+        (*tamanho)--;
+
+        // MELHORIA 1: Adiciona mensagem de sucesso.
+        printf("\nCategoria excluida com sucesso!\n");
+        delay(300);
+    }
+}
+
+void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int tamanho){
+    int categoria_valida = 0;
+    printf("\nCadastrando veiculo %d\n", *qtd + 1);
+    printf("Digite o codigo do veiculo: ");
+    scanf("%d", &vet->codigo);
+    limpar_buffer();
+
+    // Cadastro do codigo categoria
+    do {
+        printf("\nCategorias disponiveis: \n");
+        for (int i = 0; i < tamanho; i++) {
+            printf(" -> Codigo: %d | Tipo: %s\n", vet_categoria[i].codigo, vet_categoria[i].tipo);
+        }
+
+        printf("\nDigite o codigo da categoria desejada: ");
+        scanf("%d", &vet->codigo_categoria);
+        limpar_buffer();
+
+        // Verifica se o código escolhido existe no vetor de categorias
+        for(int i = 0; i < tamanho; i++){
+            if (vet_categoria[i].codigo == vet->codigo_categoria) {
+                categoria_valida = 1;
+                break; 
+            }
+        }
+
+        if (categoria_valida == 0) {
+            printf("\n--- ERRO: Codigo de categoria invalido! Tente novamente. ---\n");
+        }
+
+    } while (categoria_valida == 0);
+
+    printf("\nDigite a marca do veiculo: ");
+    ler_str(vet->marca, sizeof(vet->marca));
+    limpar_buffer();
+
+    printf("Digite o modelo do veiculo: ");
+    ler_str(vet->modelo, sizeof(vet->modelo));
+    
+    printf("\nDigite o ano de fabricacao do veiculo: ");
+    scanf("%d", &vet->ano);
+    limpar_buffer();
+
+    printf("\nDigite o valor da diaria do veiculo: ");
+    scanf("%f", &vet->diaria);
+    limpar_buffer();
+
+    printf("\nDigite o numero de unidades disponiveis do veiculo: ");
+    scanf("%d", &vet->unidades_disponiveis);
+    limpar_buffer();
+    
+    printf("\nDigite o numero de unidades alugadas do veiculo: ");
+    scanf("%d", &vet->unidades_alugadas);
+
+    (*qtd)++;
+    delay(300);
+}
+
 int main(){
-    int resposta, qtd_cadastrados;
+    int resposta, qtd_cadastrados = 0, qtd_veiculos = 0;
     Categoria vetor_categoria[10];
+    Veiculo vetor_veiculo[100];
 
     do{
         printf("\n--- Sistema de Locacao de Veiculos ---\n");
         printf("Escolha uma das opcoes abaixo:\n");
         printf("1 - Cadastrar categoria\n");
         printf("2 - Exibir categorias\n");
-        printf("3 - Inserir veiculo na frota\n");
+        printf("3 - Excluir categoria\n");
+        printf("4 - Inserir veiculo na frota\n");
         printf("0 - Sair do sistema\n");
         printf("Sua opcao: "); 
         scanf("%d", &resposta);
@@ -139,31 +240,61 @@ int main(){
                     categoria(&vetor_categoria[qtd_cadastrados], &qtd_cadastrados);
             }
             else{
-                printf("\nLimite de categorias cadastradas atingido. Não é possível cadastrar mais categorias.\n");
+                printf("\nLimite de categorias cadastradas atingido. Nao e possivel cadastrar mais categorias.\n");
                 delay(300);
             }
+            delay(300);
             break;
 
         case 2:
             if(qtd_cadastrados == 0){
                 printf("\nNenhuma categoria cadastrada, tecle 1 para cadastrar.\n");
-                break;
             }
 
             else{
                 printf("\nCategorias cadastradas: \n");
                 exibir_categoria(vetor_categoria, qtd_cadastrados);
-                break;
             }
+            delay(300);
+            break;
 
         case 3:
-            printf("\nOpcao 3 selecionada.\n");
+            if(qtd_cadastrados <= 0){
+                printf("\nNenhuma categoria encontrada, Tecle 1 para cadastrar a primeira categoria.\n");
+            }
+            else{
+                excluir_categoria(vetor_categoria, &qtd_cadastrados);
+            }
+            delay(300);
             break;
+            
+        case 4:
+            if(qtd_cadastrados <= 0 ){
+                printf("\nPara adicionar um veiculo, primeiro e necessario cadastrar uma categoria.\nPor favor, retorne ao menu e selecione a opcao 'Cadastrar Categoria'.\n");
+            }
+            else{
+                if(qtd_veiculos < 100){
+                    printf("\n---Cadastrando veiculo---\n");
+                    inserir_veiculo(&vetor_veiculo[qtd_veiculos], &qtd_veiculos, vetor_categoria, qtd_cadastrados);
+                }
+                else{
+                    printf("\nLimite de carros atingido. Nao e possivel adicionar mais carros a frota.\n");
+                }
+            }
+
+            delay(300);
+            break;
+
+        case 5:
+            delay(300);
+            break;
+
         case 0:
             printf("\nFim do programa.\n");
             break;
         default: 
             printf("\nOpcao invalida! Tente novamente.\n");
+            delay(300);
             break;
         }
 
