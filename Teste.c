@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
-#include <errno.h>
-
+#include <errno.h> 
+#define valor_max_cadastro 10
 //Estrutura data
 typedef struct 
 {
@@ -359,7 +359,7 @@ int main(){
         switch (resposta){
 
         case 1:
-            if(qtd_cadastrados < 10){
+            if(qtd_cadastrados < valor_max_cadastro){
                     printf("\n--- Cadastro de Categoria ---\n");
                     categoria(&vetor_categoria[qtd_cadastrados], &qtd_cadastrados);
             }
