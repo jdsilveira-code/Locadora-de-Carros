@@ -3,6 +3,7 @@
 #include <string.h>
 #include <windows.h>
 #include <errno.h>
+//#define valor_max_cadastro 10
 
 //Estrutura data
 typedef struct 
