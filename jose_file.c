@@ -280,7 +280,7 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
             }
 
             if (categoria_valida == 0) {
-                printf("\n--- ERRO: Codigo de categoria invalido! Tente novamente. ---\n");
+                printf("\n[ERRO] Codigo de categoria invalido! Tente novamente.\n");
             }
 
         } while (categoria_valida == 0);
@@ -306,7 +306,7 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
         resposta = ler_int("Sua opcao: ");
 
         while(resposta != 1 && resposta != 2){
-            printf("\n--- Resposta incorreta! ---\n");
+            printf("\n[ERRO] Resposta incorreta\n");
             printf("1 - Cadastrar outro veiculo\n");
             printf("2 - Voltar para o menu principal\n");
            resposta = ler_int("Sua opcao: ");
@@ -355,7 +355,7 @@ int main(){
                     categoria(&vetor_categoria[qtd_cadastrados], &qtd_cadastrados);
             }
             else{
-                printf("\nLimite de categorias cadastradas atingido. Nao e possivel cadastrar mais categorias.\n");
+                printf("\n[ERRO] Limite de categorias cadastradas atingido. Nao e possivel cadastrar mais categorias.\n");
                 delay(300);
             }
             delay(300);
@@ -363,7 +363,7 @@ int main(){
 
         case 2:
             if(qtd_cadastrados == 0){
-                printf("\nNenhuma categoria cadastrada, tecle 1 para cadastrar a primeira categoria.\n");
+                printf("\n[ERRO] Nenhuma categoria cadastrada, tecle 1 para cadastrar a primeira categoria.\n");
             }
 
             else{
@@ -375,7 +375,7 @@ int main(){
 
         case 3:
             if(qtd_cadastrados <= 0){
-                printf("\nNenhuma categoria cadastrada, Tecle 1 para cadastrar a primeira categoria.\n");
+                printf("\n[ERRO] Nenhuma categoria cadastrada, Tecle 1 para cadastrar a primeira categoria.\n");
             }
             else{
                 excluir_categoria(vetor_categoria, &qtd_cadastrados);
@@ -385,7 +385,7 @@ int main(){
             
         case 4:
             if(qtd_cadastrados <= 0 ){
-                printf("\nPara adicionar um veiculo, primeiro e necessario cadastrar uma categoria.\nPor favor, retorne ao menu e selecione a opcao 'Cadastrar Categoria'.\n");
+                printf("\n[ERRO] Nenhuma categoria cadastrada. Cadastre uma antes de inserir veiculos.\n");
             }
             else{
                 if(qtd_veiculos < 100){
@@ -393,7 +393,7 @@ int main(){
                     inserir_veiculo(&vetor_veiculo[qtd_veiculos], &qtd_veiculos, vetor_categoria, qtd_cadastrados);
                 }
                 else{
-                    printf("\nLimite de carros atingido. Nao e possivel adicionar mais carros a frota.\n");
+                    printf("\n[ERRO] Limite de carros atingido. Nao e possivel adicionar mais carros a frota.\n");
                 }
             }
 
@@ -402,7 +402,7 @@ int main(){
 
         case 5:
             if(qtd_veiculos <= 0){
-                printf("\nNenhum veiculo cadastrado, primeiro cadastre um veiculo. \nPor favor, retorne ao menu e selecione a opcao 'Inserir veiculo na frota'.\n");
+                printf("\n[ERRO] Nenhum veiculo cadastrado, primeiro cadastre um veiculo. \nPor favor, retorne ao menu e selecione a opcao 'Inserir veiculo na frota'.\n");
             }
             else{
                 exibir_veiculo(vetor_veiculo, qtd_veiculos);
@@ -414,7 +414,7 @@ int main(){
             printf("\nFim do programa.\n");
             break;
         default: 
-            printf("\nOpcao invalida! Tente novamente.\n");
+            printf("\n[ERRO] Opcao invalida! Tente novamente.\n");
             delay(300);
             break;
         }
