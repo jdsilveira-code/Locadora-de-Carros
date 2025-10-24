@@ -198,10 +198,10 @@ void inserir_veiculo(Veiculo *vet, int *tamanho_veiculo, Categoria *vet_categori
 
         // --- Restante do Cadastro ---
         printf("\nDigite a marca do veiculo: ");
-        scanf(" %49[^\n]", vet[*tamanho_veiculo].marca);
+        scanf(" %24[^\n]", vet[*tamanho_veiculo].marca);
 
         printf("\nDigite o modelo do veiculo: ");
-        scanf(" %49[^\n]", vet[*tamanho_veiculo].modelo);
+        scanf(" %24[^\n]", vet[*tamanho_veiculo].modelo);
         
         printf("\nDigite o ano de fabricacao do veiculo: ");
         scanf(" %d", &vet[*tamanho_veiculo].ano);
