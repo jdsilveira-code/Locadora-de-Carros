@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
-#include <errno.h> 
-#define valor_max_cadastro 10
+#include <errno.h>
+//#define valor_max_cadastro 10
+
 //Estrutura data
 typedef struct 
 {
@@ -61,115 +62,6 @@ void ler_str(char *string, int tamanho){
     string[strcspn(string, "\n")] = '\0';
 
 }
-
-/*Função que substitui o scanf para int
-  Exemplo de uso: resposta = ler_int("Sua opcao: ");*/
-int ler_int(const char *prompt) {
-    char buffer[100]; // Buffer para ler a linha inteira
-    char *endptr;     // Ponteiro para checar onde a conversao parou
-    long numero;      // Usamos 'long' para detectar overflow
-    int sucesso = 0;
-
-    do {
-        // 1. Exibe a mensagem para o usuario
-        printf("%s", prompt);
-
-        // 2. Le a linha inteira de forma segura com fgets
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-            // Isso pode acontecer se houver um erro de leitura (ex: EOF)
-            printf("\n[ERRO] Falha na leitura. Tente novamente.\n");
-            continue;
-        }
-
-        // 3. Remove o caractere '\n' que o fgets deixa no final
-        buffer[strcspn(buffer, "\n")] = '\0';
-
-        // 4. Tenta converter a string para um numero (base 10)
-        errno = 0; // Reseta o indicador de erro global
-        numero = strtol(buffer, &endptr, 10);
-
-        // --- 5. Validacao ---
-
-        if (endptr == buffer) {
-            // Erro: Nenhum digito foi lido. (ex: usuario digitou "abc" ou so apertou Enter)
-            printf("\n[ERRO] Entrada invalida. Por favor, digite apenas numeros.\n");
-        
-        } else if (*endptr != '\0') {
-            // Erro: Leu um numero, mas sobrou lixo no final (ex: "123abc")
-            printf("\n[ERRO] Caracteres invalidos apos o numero. Tente novamente.\n");
-        
-        } else if (errno == ERANGE) {
-            // Erro: O numero e grande ou pequeno demais (overflow/underflow)
-            printf("\n[ERRO] Numero fora do limite permitido. Tente novamente.\n");
-        
-        } else {
-            // Sucesso! O numero e valido.
-            sucesso = 1;
-        }
-
-    } while (sucesso == 0); // Repete o loop se 'sucesso' for 0
-
-    // strtol retorna 'long', mas a funcao retorna 'int'.
-    // Esta conversao (cast) e segura pois ja checamos o overflow.
-    return (int)numero;
-}
-
-/*Função que substitui o scanf para float
-  Exemplo de uso: resposta = ler_float("Sua opcao: ");*/
-float ler_float(const char *prompt) {
-    char buffer[100];
-    char *endptr;
-    float numero;
-    int sucesso = 0;
-
-    do {
-        // 1. Exibe a mensagem
-        printf("%s", prompt);
-
-        // 2. Le a linha inteira de forma segura
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-            printf("[ERRO] Falha na leitura. Tente novamente.\n");
-            continue;
-        }
-
-        // 3. Remove o '\n' do final
-        buffer[strcspn(buffer, "\n")] = '\0';
-
-        // 4. (ADAPTACAO) Troca ',' por '.' para aceitar o padrao brasileiro
-        for (int i = 0; buffer[i] != '\0'; i++) {
-            if (buffer[i] == ',') {
-                buffer[i] = '.';
-            }
-        }
-
-        // 5. Tenta converter a string para um float
-        errno = 0; // Reseta o indicador de erro
-        numero = strtof(buffer, &endptr); // A grande mudanca esta aqui
-
-        // --- 6. Validacao (exatamente a mesma logica do 'ler_int_seguro') ---
-
-        if (endptr == buffer) {
-            // Erro: Nao leu nada (ex: "abc")
-            printf("[ERRO] Entrada invalida. Por favor, digite apenas numeros.\n");
-        
-        } else if (*endptr != '\0') {
-            // Erro: Leu um numero, mas sobrou lixo (ex: "12.5xyz")
-            printf("[ERRO] Caracteres invalidos apos o numero. Tente novamente.\n");
-        
-        } else if (errno == ERANGE) {
-            // Erro: Numero grande ou pequeno demais (overflow/underflow)
-            printf("[ERRO] Numero fora do limite permitido. Tente novamente.\n");
-        
-        } else {
-            // Sucesso!
-            sucesso = 1;
-        }
-
-    } while (sucesso == 0); // Repete o loop se nao houver sucesso
-
-    return numero;
-}
-
 /* Função para cadastrar uma categoria de veículo.
    Recebe um ponteiro para Categoria e solicita os dados ao usuário.*/
 void categoria(Categoria *vet, int *qtd){
@@ -182,11 +74,10 @@ void categoria(Categoria *vet, int *qtd){
         }
 
         printf("\nCadastro da categoria %d\n", *qtd +1);
+        printf("Digite o codigo da categoria: ");
+        scanf(" %d", &vet->codigo);
 
-        vet->codigo = ler_int("Digite o codigo da categoria: ");
-
-
-        printf("Digite o tipo da categoria (ex: SUV, Economico): ");
+        printf("\nDigite o tipo da categoria (ex: SUV, Economico): ");
         ler_str(vet->tipo, sizeof(vet->tipo));
 
         (*qtd)++;
@@ -195,14 +86,16 @@ void categoria(Categoria *vet, int *qtd){
 
         printf("\n1 - Cadastrar nova categoria");
         printf("\n2 - Voltar para a pagina inicial\n");
-        resposta = ler_int("Sua opcao: ");
+        printf("Sua opcao: ");
+        scanf(" %d", &resposta);
 
 
         while (resposta != 1 && resposta != 2) {
             printf("\n--- Resposta incorreta! ---\n");
             printf("1 - Cadastrar outra categoria\n");
             printf("2 - Voltar para o menu principal\n");
-            resposta = ler_int("Sua opcao: ");
+            printf("Sua opcao: ");
+            scanf(" %d", &resposta);
         }
     }while(resposta != 2);
 
@@ -228,7 +121,8 @@ void excluir_categoria(Categoria *vet, int *tamanho){
         printf("\nCodigo: %d | Tipo: %s", vet[i].codigo, vet[i].tipo);
     }
 
-    resposta = ler_int("\n\nSua opcao (digite o codigo): ");
+    printf("Sua opcao (digite o codigo): ");
+    scanf(" %d", &resposta);
 
     // Varre o vetor até encontrar o codigo e salva o indice da posição
     for (int i = 0; i < *tamanho; i++) {
@@ -258,7 +152,8 @@ void excluir_categoria(Categoria *vet, int *tamanho){
 void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int tamanho){
     int categoria_valida, resposta = 0, iterador = 0;
     printf("\nCadastrando veiculo %d\n", *qtd + 1);
-    vet->codigo = ler_int("Digite o codigo do veiculo: ");
+    printf("Digite o codigo do veiculo: ");
+    scanf(" %d", &vet->codigo);
 
     // Cadastro do codigo categoria
     do{
@@ -268,8 +163,8 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
             for (int i = 0; i < tamanho; i++) {
                 printf(" -> Codigo: %d | Tipo: %s\n", vet_categoria[i].codigo, vet_categoria[i].tipo);
             }
-
-            vet->codigo_categoria = ler_int("\nDigite o codigo da categoria desejada: ");
+            printf("\nDigite o codigo da categoria desejada: ");
+            scanf(" %d", &vet->codigo_categoria);
 
             // Verifica se o código escolhido existe no vetor de categorias
             for(int i = 0; i < tamanho; i++){
@@ -280,7 +175,7 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
             }
 
             if (categoria_valida == 0) {
-                printf("\n--- ERRO: Codigo de categoria invalido! Tente novamente. ---\n");
+                printf("\n[ERRO] Codigo de categoria invalido! Tente novamente.\n");
             }
 
         } while (categoria_valida == 0);
@@ -291,11 +186,12 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
         printf("\nDigite o modelo do veiculo: ");
         ler_str(vet->modelo, sizeof(vet->modelo));
         
-        vet->ano = ler_int("\nDigite o ano de fabricacao do veiculo: ");
-
-        vet->diaria = ler_float("\nDigite o valor da diaria do veiculo: ");
-
-        vet->unidades_disponiveis = ler_int("\nDigite o numero de unidades disponiveis do veiculo: ");
+        printf("\nDigite o ano de fabricacao do veiculo: ");
+        scanf(" %d", &vet->ano);
+        printf("\nDigite o valor da diaria do veiculo: ");
+        scanf(" %f", &vet->diaria);
+        printf("\nDigite o numero de unidades disponiveis do veiculo: ");
+        scanf(" %d", &vet->unidades_disponiveis);
 
         (*qtd)++;
         vet++;
@@ -303,13 +199,15 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
 
         printf("\nVeiculo cadastrado!\n");
         printf("1 - Cadastrar outro carro \n2 - Voltar ao menu principal\n");
-        resposta = ler_int("Sua opcao: ");
+        printf("Sua opcao: ");
+        scanf(" %d", &resposta); 
 
         while(resposta != 1 && resposta != 2){
-            printf("\n--- Resposta incorreta! ---\n");
+            printf("\n[ERRO] Resposta incorreta\n");
             printf("1 - Cadastrar outro veiculo\n");
             printf("2 - Voltar para o menu principal\n");
-           resposta = ler_int("Sua opcao: ");
+            printf("Sua opcao: ");
+            scanf(" %d", &resposta); 
         }
     } while(resposta != 2);
     
@@ -331,7 +229,6 @@ void exibir_veiculo(Veiculo *vet, int tamanho){
         printf("Unidades Alugadas..: %d\n", vet[i].unidades_alugadas);
     }
 }
-
 int main(){
     int resposta, qtd_cadastrados = 3, qtd_veiculos = 3;
     Categoria vetor_categoria[10] = {
@@ -354,12 +251,13 @@ int main(){
         printf("4 - Inserir veiculo na frota\n");
         printf("5 - Exibir veiculos\n");
         printf("0 - Sair do sistema\n");
-        resposta = ler_int("Sua opcao: ");
+        printf("Sua opcao: ");
+        scanf(" %d", &resposta);
 
         switch (resposta){
 
         case 1:
-            if(qtd_cadastrados < valor_max_cadastro){
+            if(qtd_cadastrados < 10){
                     printf("\n--- Cadastro de Categoria ---\n");
                     categoria(&vetor_categoria[qtd_cadastrados], &qtd_cadastrados);
             }
