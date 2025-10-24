@@ -54,14 +54,6 @@ void delay(int tempo){
     fflush(stdout);
     Sleep(tempo);
 }
-
-/*Função que substitui o scanf para strings
-  Exemplo de uso: ler_str(variavel);*/
-void ler_str(char *string, int tamanho){
-    fgets(string, tamanho, stdin);
-    string[strcspn(string, "\n")] = '\0';
-
-}
 /* Função para cadastrar uma categoria de veículo.
    Recebe um ponteiro para Categoria e solicita os dados ao usuário.*/
 void categoria(Categoria *vet, int *qtd){
@@ -77,8 +69,10 @@ void categoria(Categoria *vet, int *qtd){
         printf("Digite o codigo da categoria: ");
         scanf(" %d", &vet->codigo);
 
-        printf("\nDigite o tipo da categoria (ex: SUV, Economico): ");
-        ler_str(vet->tipo, sizeof(vet->tipo));
+        /*printf("\nDigite o tipo da categoria (ex: SUV, Economico): ");
+        ler_str(vet->tipo, sizeof(vet->tipo));*/
+        printf("Digite o tipo da categoria (ex: SUV, Economico): ");
+        scanf(" %49[^\n]", vet->tipo);
 
         (*qtd)++;
         vet++;
@@ -113,15 +107,13 @@ void exibir_categoria(Categoria *vet, int tamanho){
 /* Função que exclui alguma categoria cadastrada.*/
 void excluir_categoria(Categoria *vet, int *tamanho){
     int resposta, indice_excluir = -1;
-
-    printf("\n--- Excluir Categoria ---\n");
     printf("Qual categoria voce deseja excluir?\n");
     // Imprime as categorias existentes
     for (int i = 0; i < *tamanho; i++) {
         printf("\nCodigo: %d | Tipo: %s", vet[i].codigo, vet[i].tipo);
     }
 
-    printf("Sua opcao (digite o codigo): ");
+    printf("\nSua opcao (digite o codigo): ");
     scanf(" %d", &resposta);
 
     // Varre o vetor até encontrar o codigo e salva o indice da posição
@@ -181,10 +173,10 @@ void inserir_veiculo(Veiculo *vet, int *qtd, Categoria *vet_categoria, int taman
         } while (categoria_valida == 0);
 
         printf("\nDigite a marca do veiculo: ");
-        ler_str(vet->marca, sizeof(vet->marca));
+        scanf(" %49[^\n]", vet->marca);
 
         printf("\nDigite o modelo do veiculo: ");
-        ler_str(vet->modelo, sizeof(vet->modelo));
+        scanf(" %49[^\n]", vet->modelo);
         
         printf("\nDigite o ano de fabricacao do veiculo: ");
         scanf(" %d", &vet->ano);
@@ -229,6 +221,7 @@ void exibir_veiculo(Veiculo *vet, int tamanho){
         printf("Unidades Alugadas..: %d\n", vet[i].unidades_alugadas);
     }
 }
+
 int main(){
     int resposta, qtd_cadastrados = 3, qtd_veiculos = 3;
     Categoria vetor_categoria[10] = {
