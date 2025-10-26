@@ -159,7 +159,10 @@ void inserir_veiculo(Veiculo *vet, int *tamanho_veiculo, Categoria *vet_categori
             
             printf("\nDigite o codigo do veiculo: ");
             scanf(" %d", &codigo_digitado);
-
+            if(codigo_digitado == 0){
+                printf("\n[ERRO] O codigo 0 não pode ser utilizado");
+                veiculo_valido = 0;
+            }
             // Verifica se o codigo ja existe no vetor de veiculos
             for(int i = 0; i < *tamanho_veiculo; i++){
                 if (vet[i].codigo == codigo_digitado) {
@@ -253,6 +256,56 @@ void exibir_veiculo(Veiculo *vet, int tamanho){
         printf("Unidades Alugadas..: %d\n", vet[i].unidades_alugadas);
     }
 }
+
+void realizar_aluguel(Veiculo *vet, int *qtd, Categoria *vet_categoria, int tamanho){
+    int codigoVeiculo, qtd_veiculos = *qtd, indice = -1, codigo_valido = 0;
+    printf("\n--- Alugar Veiculo ---\n");
+    printf("Digite o codigo do veiculo que deseja alugar\n");
+    printf("Veículos disponíveis: \n");
+    exibir_veiculo(vet, tamanho);
+
+    do {
+        printf("Sua opcao: ");
+        scanf(" %d", &codigoVeiculo);
+        
+        codigo_valido = 0; 
+        
+        // Procura o codigo no vetor
+        for(int i = 0; i < qtd; i++){
+            if(vet[i].codigo == codigoVeiculo){
+                indice = i;          
+                codigo_valido = 1;   
+                break;               
+            }
+        }
+
+        if(codigo_valido == 0){
+            printf("[ERRO] codigo nao encontrado, digite novamente.\n");
+        }
+
+    } while(codigo_valido == 0); // Repete se o codigo nao foi valido
+
+
+    int qtdUnidadesDisponiveis = vetor_veiculo[i].unidades_disponiveis - vetor_veiculo[i].unidades_alugadas;
+    int qtdAlugada= vetor_veiculo[i].unidades_alugadas;
+    if (qtdAlugada<qtdUnidadesDisponiveis) {
+        vetor_veiculo[i].unidades_alugadas += 1;
+        printf("\nVeiculo alugado com sucesso!\n");
+    } else {
+        printf("\n[ERRO] Nao ha unidades disponiveis para aluguel deste veiculo.\n");
+    }
+    break;
+    printf("Digite a data de retirada do Veículo: ");
+    scanf(" %d", &vet->data_retirada.dia);
+    scanf(" %d", &vet->data_retirada.mes);
+    scanf(" %d", &vet->data_retirada.ano);
+    printf("Digite a data prevista de devolução: ");
+    scanf(" %d", &vet->data_prevista_devolucao.dia);
+    scanf(" %d", &vet->data_prevista_devolucao.mes);       
+    scanf(" %d", &vet->data_prevista_devolucao.ano);
+    valorPrevisto = vet->diaria * numeroDias;
+}
+
 
 int main(){
     int resposta, qtd_cadastrados = 0, qtd_veiculos = 0;
