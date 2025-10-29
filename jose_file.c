@@ -528,6 +528,7 @@ void relatorio_todas_categorias(Veiculo *vets, int qtd_veic, Categoria *cats, in
     for (int i = 0; i < qtd_cat; i++) {
         int subtotal_categoria = 0;
         int veiculos_encontrados_na_categoria = 0;
+        
 
         printf("\n==============================================\n");
         printf("Categoria: %s (Codigo: %d)\n", cats[i].tipo, cats[i].codigo);
